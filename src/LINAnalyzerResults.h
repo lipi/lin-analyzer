@@ -15,7 +15,6 @@ public:
 		NoFrame=0,				// no frame recognized.
 		// LIN Header
 		headerBreak,			// expecting break.
-		headerSync,				// expecting sync.
 		headerPID,				// expecting PID.
 		// LIN Response
 		responseDataZero,		// expecting first data byte.
@@ -29,8 +28,7 @@ public:
 		Okay=0x00,
 		byteFramingError=0x01,
 		headerBreakExpected=0x02,
-		headerSyncExpected=0x04,
-		checksumMismatch=0x08,
+		checksumMismatch=0x04,
 	} tLINFrameFlags;
 
 	LINAnalyzerResults( LINAnalyzer* analyzer, LINAnalyzerSettings* settings );

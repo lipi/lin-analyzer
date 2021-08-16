@@ -75,7 +75,6 @@ void LINSimulationDataGenerator::CreateBadFrame()
 U8 LINSimulationDataGenerator::CreateHeader()
 {
 	CreateBreakField();
-	CreateSyncField();
 	mChecksum.clear(); // version 2 starts chksum at PID field.
 	U8 identifier = Random( 0, 59 );
 
@@ -143,11 +142,6 @@ void LINSimulationDataGenerator::CreateBreakField()
 	// stop bit...
 	mSerialSimulationData.TransitionIfNeeded( BIT_HIGH );
 	mSerialSimulationData.Advance( samples_per_bit * 2 );
-}
-
-void LINSimulationDataGenerator::CreateSyncField()
-{
-	CreateSerialByte( 0x55 );			// The sync byte field.
 }
 
 void LINSimulationDataGenerator::CreateProtectedIdentifierField(U8 id)

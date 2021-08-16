@@ -29,7 +29,6 @@ void LINAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& channel, 
 
     if ( frame.mFlags & byteFramingError )      fault_str += "!FRAME";
     if ( frame.mFlags & headerBreakExpected )   fault_str += "!BREAK";
-    if ( frame.mFlags & headerSyncExpected )    fault_str += "!SYNC" ;
     if ( frame.mFlags & checksumMismatch )      fault_str += "!CHK";
 	if ( fault_str.length() )
     {
@@ -66,11 +65,6 @@ void LINAnalyzerResults::GenerateBubbleText( U64 frame_index, Channel& channel, 
 				str[0] += "BRK";
 				str[1] += "Break";
 				str[2] += "Header Break";
-				break;
-			case LINAnalyzerResults::headerSync:			// expecting sync.
-				str[0] += "SYN";
-				str[1] += "Sync";
-				str[2] += "Header Sync";
 				break;
 			case LINAnalyzerResults::headerPID:				// expecting PID.
 				AnalyzerHelpers::GetNumberString( frame.mData1&0x3F, display_base, 8, number_str, 128 );
@@ -133,7 +127,7 @@ void LINAnalyzerResults::GenerateExportFile( const char* file, DisplayBase displ
 	U64 trigger_sample = mAnalyzer->GetTriggerSample();
 	U32 sample_rate = mAnalyzer->GetSampleRate();
 
-	file_stream << "T.BREAK,BREAK,T.SYNC,SYNC,T.PID,PID,T.D,Dn..." << std::endl;
+	file_stream << "T.BREAK,BREAK,T.PID,PID,T.D,Dn..." << std::endl;
 
 	U64 num_frames = GetNumFrames();
 	for( U64 i = 0; i < num_frames; i++ )
@@ -193,6 +187,7 @@ void LINAnalyzerResults::GenerateExportFile( const char* file, DisplayBase displ
 
 void LINAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBase display_base )
 {
+	display_base = Hexadecimal;
     ClearTabularText();
 
 	Frame frame = GetFrame( frame_index );
@@ -203,7 +198,6 @@ void LINAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBase 
 
     if ( frame.mFlags & byteFramingError )      fault_str += "!FRAME";
     if ( frame.mFlags & headerBreakExpected )   fault_str += "!BREAK";
-    if ( frame.mFlags & headerSyncExpected )    fault_str += "!SYNC" ;
     if ( frame.mFlags & checksumMismatch )      fault_str += "!CHK";
 	if ( fault_str.length() )
     {
@@ -220,24 +214,20 @@ void LINAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBase 
 			default:
 			case LINAnalyzerResults::NoFrame:
 				
-				str += "Inter-Byte Space";
+				str += " "; // will act as separator between bytes
 				//AnalyzerHelpers::GetNumberString( frame.mData1, display_base, 8, str, 128 );
 				break;
 
 			case LINAnalyzerResults::headerBreak:			// expecting break.
 				
-				str += "Header Break";
-				break;
-
-			case LINAnalyzerResults::headerSync:			// expecting sync.
-				
-				str += "Header Sync";
+				str += "\n";
 				break;
 
 			case LINAnalyzerResults::headerPID:				// expecting PID.
 
 				AnalyzerHelpers::GetNumberString( frame.mData1&0x3F, display_base, 8, number_str, 128 );
-				str += "Protected ID: ";
+				
+				str += "PID: ";
 				str += number_str;
 				break;
 
@@ -247,9 +237,6 @@ void LINAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBase 
 				{
 					char seq_str[128];
 					AnalyzerHelpers::GetNumberString( frame.mData2-1, Decimal, 8, seq_str, 128 );
-					str += "Data "; 
-					str += seq_str; 
-					str += ": "; 
 					str += number_str;
 				}
 				break;
@@ -267,15 +254,13 @@ void LINAnalyzerResults::GenerateFrameTabularText( U64 frame_index, DisplayBase 
 				{
 					char seq_str[128];
 					AnalyzerHelpers::GetNumberString( frame.mData2 - 1, Decimal, 8, seq_str, 128 );
-					str += "Data ";
-					str += seq_str;
-					str += ": ";
 					str += number_str;
 				}
 
 				break;
 		}
 
+//		str += " ";
 		AddTabularText( str.c_str() );
 	}
 

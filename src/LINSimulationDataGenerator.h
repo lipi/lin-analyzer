@@ -23,7 +23,6 @@ protected:
 	U8 CreateHeader();
 	void CreateReponse( U8 length );
 	void CreateBreakField();
-	void CreateSyncField();
 	void CreateProtectedIdentifierField( U8 id );
 	void CreateSerialByte( U8 byte );
 	void SwapEnds( U8& byte );

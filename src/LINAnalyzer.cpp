@@ -24,7 +24,7 @@ void LINAnalyzer::WorkerThread()
 	U8 nDataBytes=0;
 	bool byteFramingError;
 	Frame byteFrame;        // byte fame from start bit to stop bit
-	Frame ibsFrame;         // inter-byte space startsing after SYNC
+	Frame ibsFrame;         // inter-byte space starting after header
 	bool is_data_really_break;
 	bool ready_to_save = false;
 	bool is_start_of_packet = false;
@@ -85,24 +85,13 @@ void LINAnalyzer::WorkerThread()
                 showIBS=true;
 				if ( byteFrame.mData1 == 0x00 )
 				{
-					mFrameState = LINAnalyzerResults::headerSync;
+					mFrameState = LINAnalyzerResults::headerPID;
 					byteFrame.mType = LINAnalyzerResults::headerBreak;
 					is_start_of_packet = true;
 				}
 				else
 				{
 					byteFrame.mFlags |= LINAnalyzerResults::headerBreakExpected;
-					mFrameState = LINAnalyzerResults::NoFrame;
-				}
-				break;
-			case LINAnalyzerResults::headerSync:			// expecting sync.
-				if ( byteFrame.mData1 == 0x55 )
-				{
-					mFrameState = LINAnalyzerResults::headerPID;
-				}
-				else
-				{
-					byteFrame.mFlags |= LINAnalyzerResults::headerSyncExpected;
 					mFrameState = LINAnalyzerResults::NoFrame;
 				}
 				break;

@@ -8,13 +8,13 @@ LINAnalyzerSettings::LINAnalyzerSettings()
 ,	mBitRate( 20000 )
 {
 	mInputChannelInterface.reset( new AnalyzerSettingInterfaceChannel() );
-	mInputChannelInterface->SetTitleAndTooltip( "Serial", "Standard LIN" );
+	mInputChannelInterface->SetTitleAndTooltip( "Serial", "No-sync LIN" );
 	mInputChannelInterface->SetChannel( mInputChannel );
 
 	mLINVersionInterface.reset( new AnalyzerSettingInterfaceNumberList() );
-	mLINVersionInterface->SetTitleAndTooltip( "LIN Version",  "Specify the LIN protocol version 1 or 2." );
-	mLINVersionInterface->AddNumber( 1.0, "Version 1.x", "LIN Protocol Specification Version 1.x");
-	mLINVersionInterface->AddNumber( 2.0, "Version 2.x", "LIN Protocol Specification Version 2.x");
+	mLINVersionInterface->SetTitleAndTooltip( "NLIN Version",  "Specify the LIN protocol version 1 or 2." );
+	mLINVersionInterface->AddNumber( 1.0, "Version 1.x", "NLIN Protocol Specification Version 1.x");
+	mLINVersionInterface->AddNumber( 2.0, "Version 2.x", "NLIN Protocol Specification Version 2.x");
 	mLINVersionInterface->SetNumber( mLINVersion );
 
 	mBitRateInterface.reset( new AnalyzerSettingInterfaceInteger() );
@@ -46,7 +46,7 @@ bool LINAnalyzerSettings::SetSettingsFromInterfaces()
 	mBitRate = mBitRateInterface->GetInteger();
 
 	ClearChannels();
-	AddChannel( mInputChannel, "LIN", true );
+	AddChannel( mInputChannel, "NLIN", true );
 
 	return true;
 }
@@ -68,7 +68,7 @@ void LINAnalyzerSettings::LoadSettings( const char* settings )
 	text_archive >> mLINVersion;
 
 	ClearChannels();
-	AddChannel( mInputChannel, "LIN", true );
+	AddChannel( mInputChannel, "NLIN", true );
 
 	UpdateInterfacesFromSettings();
 }
